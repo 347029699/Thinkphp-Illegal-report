@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
+    name="viewport" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>职工说事</title>
+  <script src="__MODULE_JS__/jquery.min.js"></script>
+  <link rel="stylesheet" href="__MODULE_CSS__/iconfont.css?v=1">
+  <link rel="stylesheet" type="text/css" href="__MODULE_CSS__/style.css?v=12">
+  <script src="__MODULE_JS__/layer.js"></script>
+  <script src="__MODULE_JS__/zepto.weui.js"></script>
+  <script src="__MODULE_JS__/lrz.min.js"></script>
+  <link rel="stylesheet" href="__MODULE_CSS__/weui.css"/>
+  <link rel="stylesheet" href="__MODULE_CSS__/weuix.css"/>
+  <script type="text/javascript">
+    (function (doc, win) {
+      var docEl = doc.documentElement,
+        resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+        recalc = function () {
+          var clientWidth = docEl.clientWidth;
+          if (!clientWidth) return;
+          if (clientWidth >= 750) {
+            docEl.style.fontSize = '100px';
+          } else {
+            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+          }
+        };
+      if (!doc.addEventListener) return;
+      win.addEventListener(resizeEvt, recalc, false);
+      doc.addEventListener('DOMContentLoaded', recalc, false);
+    })(document, window);
+  </script>
+
+</head>
+
+<body>
+  <div id="main" class="jfpj">
+    <div class="content">
+      <div class="item item-sb">
+        <div class="label">职工说事类型：</div>
+        <div class="select">
+          <select id="year">
+            <option value="">请选择</option>
+            <option value="2020">2020</option>
+            <option value="2019">2020</option>
+          </select>
+          <span></span>
+        </div>
+      </div>
+      <div class="item item-sb">
+        <div class="label">时间：</div>
+        <div class="date">
+          <input type="date" value="2021-3-16" name="brrow_time" id="startDate" placeholder="请选择时间">
+          <span></span>
+        </div>
+      </div>
+     
+  
+
+      <div class="item item-col noborder" style="margin-bottom: 0; padding-bottom: 0;">
+        <div class="label">评价内容：</div>
+        <textarea id="content" placeholder="请在此输入您的意见建议"></textarea>
+      </div>
+
+      <div class="item item-col noborder"  style="margin-bottom: 0; padding-top: .15rem;padding-bottom: 0;">
+        <div class="label">附件：支持照片、视频和音频文件</div>
+        <div class="up">
+
+          <div class="weui-uploader">
+            <div class="weui-uploader__bd">
+                <ul class="weui-uploader__files">
+                </ul>
+                <div class="weui-uploader__input-box">
+                    <input class="weui-uploader__input" accept="image/*" type="file"  onchange="previewImages(this)">
+                </div>
+            </div>
+            <script>
+              function removeimg(obj){
+                  $.confirm('您确定要删除吗?', '确认删除?', function() {
+                    $(obj).remove();
+                  });
+                  return false;
+              }
+              function previewImages(file) {
+                var MAXWIDTH = 1000;
+                var MAXHEIGHT = 1200;
+                for (var i = 0; i < file.files.length; i++) {
+
+                    if (file.files && file.files[i]) {
+                        var reader = new FileReader();
+                        reader.onload = function (evt) {
+                            $.post("php/upload.php",{imgbase64: evt.target.result},function(rs){
+                                $(file).parent().prev().append('<li  onclick="removeimg(this)" class="weui-uploader__file" style="background-image:url('+evt.target.result+')"><input value="'+rs.src+'"  type="hidden"  name="files" /></li>');
+                            },'json');
+                        };
+                        reader.readAsDataURL(file.files[i]);
+                        console.log(file.files[i]);
+                    }
+
+                }
+            }
+            </script>
+          </div>
+    
+
+        </div>
+      </div>
+
+      <div class="item item-col item-sbbm" style="margin-bottom: 0; padding-top: 0;">
+        <div class="label">是否保密：</div>
+        <div class="radio">
+          <label><input type="radio" name="radio4"> 是</label>
+          <label><input type="radio" name="radio4"> 否</label>
+        </div>
+      </div>
+
+      <div class="submit" style="margin-top: 0;">
+        <button type="button" id="submit">提交</button>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+   
+  $("#startDate").val('2021-03-16');
+  
+  $('#submit').click(function(){
+    if($('#year').val()==""){
+      layer.open({
+        content: '请选择年度'
+        ,skin: 'msg'
+        ,time: 2 //2秒后自动关闭
+      });
+      return false
+    }
+    if($('#hint1').val()=="0"){
+      layer.open({
+        content: '请打分'
+        ,skin: 'msg'
+        ,time: 2 //2秒后自动关闭
+      });
+      return false
+    }
+    if($('#content').val()==""){
+      layer.open({
+        content: '请输入评价内容'
+        ,skin: 'msg'
+        ,time: 2 //2秒后自动关闭
+      });
+      return false
+    }
+    layer.open({
+        content: '提交成功'
+        ,skin: 'msg'
+        ,time: 2 //2秒后自动关闭
+      });
+  })  
+</script>
+</html>

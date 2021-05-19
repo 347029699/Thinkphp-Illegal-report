@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" name="viewport" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>个人中心</title>
+    <script src="__MODULE_JS__/jquery.min.js"></script>
+    <link rel="stylesheet" href="__MODULE_CSS__/mescroll.min.css">
+    <script type="text/javascript" src="__MODULE_JS__/mescroll.min.js"></script>
+    <link rel="stylesheet" href="__MODULE_CSS__/iconfont.css?v=1">
+    <link rel="stylesheet" type="text/css" href="__MODULE_CSS__/style.css?v=12">
+    <script type="text/javascript">
+      (function (doc, win) {
+            var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    if(clientWidth>=750){
+                        docEl.style.fontSize = '100px';
+                    }else{
+                        docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                    }
+                };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+  <style>
+    body,html{ background: #f4f4f4;}
+  </style>
+</head>
+<body>
+{volist name="data" id="r"}
+  <div id="main" class="ghjfmore">
+    <div class="morebox">
+      {if $r.status=="审核通过"}
+      <div class="status ok">
+      {else /}<div class="status">
+      {/if}
+      {$r.status} <i class="iconfont icon-angle-right"></i></div>
+      <div class="memo">
+        <p><span>举报时间：</span>{$r.report_date}</p>
+        <p><span>举报发生街道:</span>{$r.report_street}</p>
+        <p><span>举报发生地：</span>{$r.report_address}</p>
+
+        {if(!empty($r.report_people))}
+        <p><span>被举报人:</span>{$r.report_people}</p>
+        {else /}
+        <p><span>被举报人:</span>未查询到被举报人</p>
+        {/if}
+
+        {if(!empty($r.report_mine))}
+        <p><span>涉嫌矿种：</span>{$r.report_mine}</p>
+        {else /}
+        <p><span>被举报人:</span>未查询到矿种</p>
+        {/if}
+      </div>
+      <div class="morepic">
+        <div class="name">图片：</div>
+        {volist name="img" id="img"}
+        {if(!empty($img))}
+        <div class="piclist">
+          <ul>
+            <li><img src="{$img|get_file_path}" alt=""></li>
+          </ul>
+        </div>
+        {else /}
+          未查询到图片
+        {/if}
+        {/volist}
+      </div>
+       
+      <div class="title">
+        举报问题描述：
+      </div>
+      <div class="qa">
+          {$r.report_description}
+      </div>
+      <div class="title" style="color: #f94159;">
+        管理员回复：
+      </div>
+      {if(!empty($r.feedback))}
+        <div class="reply">
+        {$r.feedback}
+        </div>
+      {else /}
+        <div class="reply">
+        暂未回复！
+        </div>
+      {/if}
+
+    </div>
+    
+
+  </div>
+
+{/volist}
+</body>
+
+
+</html>

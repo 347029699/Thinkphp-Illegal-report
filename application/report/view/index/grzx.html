@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" name="viewport" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>个人中心</title>
+    <script src="__MODULE_JS__/jquery.min.js"></script>
+    <link rel="stylesheet" href="__MODULE_CSS__/mescroll.min.css">
+    <script type="text/javascript" src="__MODULE_JS__/mescroll.min.js"></script>
+    <link rel="stylesheet" href="__MODULE_CSS__/iconfont.css?v=1">
+    <link rel="stylesheet" type="text/css" href="__MODULE_CSS__/style.css?v=12">
+    <script type="text/javascript">
+      (function (doc, win) {
+            var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    if(clientWidth>=750){
+                        docEl.style.fontSize = '100px';
+                    }else{
+                        docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                    }
+                };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+  
+</head>
+<body>
+  <div id="main" class="mescroll ghjf">
+     
+    <ul id="dataList" class="feedlist">
+      
+      <!-- <li>
+        <div class="status">审核中 <i class="iconfont icon-angle-right"></i></div>
+        <div class="memo">
+          <p><span>举报时间：</span>2020-07-18</p>
+          <p><span>举报发生地：</span>浙江省宁波市宁海县 跃龙街道银河路</p>
+          <p><span>涉嫌矿种：</span>xxxx</p>
+        </div>
+        <div class="boot">
+          <div class="operate">
+            <div class="look"><i class="iconfont icon-yanjing"></i>查看</div>
+            <div class="del"><i class="iconfont icon-del"></i>删除</div>
+            <div class="edit"><i class="iconfont icon-xiugai"></i>编辑</div>
+          </div>
+        </div>
+      </li>
+
+      <li>
+        <div class="status ok">已审核 <i class="iconfont icon-angle-right"></i></div>
+        <div class="memo">
+          <p><span>举报时间：</span>2020-07-18</p>
+          <p><span>举报发生地：</span>浙江省宁波市宁海县 跃龙街道银河路</p>
+          <p><span>涉嫌矿种：</span>xxxx</p>
+        </div>
+        <div class="boot">
+          <div class="operate">
+            <div class="look"><i class="iconfont icon-yanjing"></i>查看</div>
+            <div class="del"><i class="iconfont icon-del"></i>删除</div>
+            <div class="edit"><i class="iconfont icon-xiugai"></i>编辑</div>
+          </div>
+        </div>
+      </li> -->
+
+
+    </ul>
+  </div>
+</body>
+
+<script>
+  $(function(){
+   //创建MeScroll对象
+   var mescroll = new MeScroll("main", {
+     down:{
+       isLock:true,
+     },
+     up: {
+       callback: getListData, //上拉回调,此处可简写; 相当于 callback: function (page) { getListData(page); }
+       clearEmptyId: "dataList", //1.下拉刷新时会自动先清空此列表,再加入数据; 2.无任何数据时会在此列表自动提示空
+       isBounce: false, //此处禁止ios回弹,解析(务必认真阅读,特别是最后一点): http://www.mescroll.com/qa.html#q10
+       noMoreSize: 1, //如果列表已无数据,可设置列表的总数量要大于半页才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看
+       loadFull:{
+         use : true ,
+         delay : 500
+       },
+       empty: {
+         icon: "images/mescroll-empty.png", //图标,默认null
+         tip: "没有找到您的举报信息", //提示
+       },
+      //  toTop:{ //配置回到顶部按钮
+      //    src : "images/mescroll-totop.png", //默认滚动到1000px显示,可配置offset修改
+      //    offset : 1000
+      //  },
+       htmlNodata:'<p class="upwarp-nodata"><span>已经到底啦</span></p>'
+     }
+   });
+ 
+    //var params = url.substr(url.indexOf('/')+).split('/');
+    //var pageName = parms[0];
+    //var pageNumber = params[1];
+
+  //  $('body').click(function(){
+  //     $('.activity_select ul li').removeClass('on')
+  //     $('.activity_select ul li .dap').hide()
+  //  })
+   /*上拉加载的回调 page = {num:1, size:10}; num:当前页 从1开始, size:每页数据条数 */
+    var url = location.href;
+    var s1 = url.split("/");
+    var s2 = s1[s1.length-1].split(".");
+    var number = s2[0];
+    page = {num:1, size:10};
+    function getListData(page){
+     //联网加载数据
+     getListDataFromNet(number,page.num, page.size, function(curPageData){
+       //联网成功的回调,隐藏下拉刷新和上拉加载的状态;
+       //mescroll会根据传的参数,自动判断列表如果无任何数据,则提示空;列表无下一页数据,则提示无更多数据;
+        // console.log("num="+page.num+", size="+page.size+", curPageData.length="+curPageData.length);
+
+       //方法一(推荐): 后台接口有返回列表的总页数 totalPage
+       //mescroll.endByPage(curPageData.length, totalPage); //必传参数(当前页的数据个数, 总页数)
+       
+       //方法二(推荐): 后台接口有返回列表的总数据量 totalSize
+       //mescroll.endBySize(curPageData.length, totalSize); //必传参数(当前页的数据个数, 总数据量)
+       
+       //方法三(推荐): 您有其他方式知道是否有下一页 hasNext
+       //mescroll.endSuccess(curPageData.length, hasNext); //必传参数(当前页的数据个数, 是否有下一页true/false)
+       
+       //方法四 (不推荐),会存在一个小问题:比如列表共有20条数据,每页加载10条,共2页.如果只根据当前页的数据个数判断,则需翻到第三页才会知道无更多数据,如果传了hasNext,则翻到第二页即可显示无更多数据.
+       mescroll.endSuccess(curPageData.length);
+       //设置列表数据
+       setListData(curPageData);
+     }, function(){
+       //联网失败的回调,隐藏上拉加载的状态
+         mescroll.endErr();
+     });
+   }
+   /*设置列表数据*/
+     function setListData(curPageData){
+     var listDom=$("#dataList");
+      var StrHtml="";
+      var statusHtml="";
+    for (var i = 0; i < curPageData.length; i++) {
+        var pd=curPageData[i];
+        if(pd.Status=="审核未过"){
+        statusHtml = '<div class="status">'+pd.Status+' <i class="iconfont icon-angle-right"></i></div>';
+       }
+        if(pd.Status=="审核通过"){
+          statusHtml = '<div class="status ok">'+pd.Status+' <i class="iconfont icon-angle-right"></i></div>';
+        }
+      
+     
+      StrHtml += '<li>';
+      StrHtml += statusHtml;
+      StrHtml += '<div class="memo">\
+      <p><span>举报时间：</span>'+pd.report_date+'</p>\
+      <p><span>举报发生地：</span>'+pd.report_street+'-'+pd.report_address+'</p>\
+      <p><span>涉嫌矿种：</span>'+pd.report_mine+'</p>\
+    </div>';
+      StrHtml += '<div class="boot">\
+      <div class="operate">\
+        <div class="look" onclick="more('+pd.id+')"><i class="iconfont icon-yanjing"></i>查看</div>\
+        <div class="del" onclick="del('+pd.id+')"><i class="iconfont icon-del"></i>删除</div>\
+        <div class="edit" onclick="edit('+pd.id+')"><i class="iconfont icon-xiugai"></i>编辑</div>\
+      </div>\
+    </div>';
+      StrHtml += '</li>';
+     
+    }
+    listDom.append(StrHtml);//加在列表的后面,上拉加载
+   }
+
+
+   /*联网加载列表数据
+    在您的实际项目中,请参考官方写法: http://www.mescroll.com/api.html#tagUpCallback
+    请忽略getListDataFromNet的逻辑,这里仅仅是在本地模拟分页数据,本地演示用
+    实际项目以您服务器接口返回的数据为准,无需本地处理分页.
+    * */
+   function getListDataFromNet(number,pageNum,pageSize,successCallback,errorCallback) {
+     //延时一秒,模拟联网
+       setTimeout(function () {
+         $.ajax({
+             type: 'post',
+             url: number+'?num='+pageNum+"&size="+pageSize,
+             dataType: 'json',
+             success: function(data){
+              //模拟服务器接口的分页
+              var listData=[];
+							for (var i = (pageNum-1)*pageSize; i < pageNum*pageSize; i++) {
+                if(i==data.length) break;
+                listData.push(data[i]);
+              }
+             successCallback(listData);
+             },
+             error: errorCallback
+         });
+       },500)
+   }
+  
+ });
+function edit(id){
+  location.href = '{:url("report/Index/edit")}?id='+id;
+}
+function del(id){
+  if(confirm("确定要删除吗？")){
+    location.href = '{:url("report/Index/delete")}?id='+id;
+  }
+}
+function more(id){
+  location.href = '{:url("report/Index/more")}?id='+id;
+}
+</script>
+</html>

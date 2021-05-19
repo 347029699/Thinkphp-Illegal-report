@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我要举报</title>
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" name="viewport" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="__MODULE_JS__/jquery.min.js"></script>
+    <script src="__MODULE_JS__/layer.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <link rel="stylesheet" href="__MODULE_CSS__/iconfont.css?v=1">
+    <link rel="stylesheet" type="text/css" href="__MODULE_CSS__/style.css?v=12">
+    <script type="text/javascript">
+      (function (doc, win) {
+            var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    if(clientWidth>=750){
+                        docEl.style.fontSize = '100px';
+                    }else{
+                        docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                    }
+                };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+</head>
+<body>
+
+  <div id="main" class="xybox">
+    <div class="title">举报说明</div>
+    <div class="content">
+        <p><b>一、有奖举报范围：</b></p>
+        <p>宁海县非法采矿“随手拍”有奖举报平台主要接收举报自然人、法人或者其他组织以各种名义非法采矿和变相开采矿产资源的违法犯罪行为，包括非法盗采以及借土地开发、地质灾害应急排险、边坡治理、矿山复绿、修路等名义实施的非法采矿。</p>
+        <p><b>二、举报奖励条件：</b></p>
+        <p>（一）举报内容在我县自然资源主管部门的监管职责范围内；</p>
+        <p>（二）有明确的被举报对象和具体的违法事实或者违法犯罪线索；</p>
+        <p>（三）举报内容事先未被新闻媒体、网络信息等公开报道和披露，或者事先未被自然资源主管部门掌握；</p>
+        <p>（四）举报情况经我县自然资源主管部门立案调查，查证属实作出行政处罚决定，或者依法移送司法机关追究刑事责任的。</p>
+        <p><b>三、举报奖励原则上限于实名举报，实名举报应当提供举报人姓名、身份证号码及有效联系方式等信息（严格保密）。</b></p>
+        <p><b>四、违法线索提交成功后，县自然资源主管部门将在法定工作时间内依法及时接收、判定、核查、处理和反馈。</b></p>
+        <p><b>五、请自觉遵守相关法律法规，如实文明举报。上传不良信息恶意举报的用户，将承担由此引发的一切法律责任。</b></p>
+    </div>
+<form method="post">
+    <div class="checkrow">
+        <label>
+            <input type="checkbox" id="jbsm" name="jbsm" value="0">
+            <p>已阅读并同意该《举报说明》</p>
+        </label>
+    </div>
+    <button type="button" class="btn" id="submit" name="submit" >下一步</button>
+</form>
+  </div>
+
+</body>
+<script>
+	$(function(){
+        $('#submit').click(function(){
+            var isChecked = $('#jbsm').is(":checked");
+            if(!isChecked) {
+                layer.open({
+                    content: '请同意《举报说明》'
+                    ,skin: 'msg'
+                    ,time: 2 //2秒后自动关闭
+                });
+            }else{
+                var url = location.href;
+                var s1 = url.split("/");
+                var s2 = s1[s1.length-1].split(".");
+                console.log(s2);
+                var number = s2[0];
+                {location.href = '{:url("report/Index/online")}?number='+number;}
+            }
+        })
+	});
+</script>
+</html>
